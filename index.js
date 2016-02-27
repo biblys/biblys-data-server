@@ -1,9 +1,14 @@
 'use strict';
 
 const app = require('express')();
+const bodyParser = require("body-parser");
 const mongoose = require('mongoose');
 
 const port = 8080;
+
+// Body parser
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // Mongo
 mongoose.connect('mongodb://localhost/biblys');
@@ -25,7 +30,7 @@ app.get('/', function(req, res) {
     books = books.map(function(book) {
       return `<li>${book.title} (${book.ean})</li>`;
     });
-    res.send(`<ul>${books.join()}</ul>`);
+    res.send(`<ul>${books.join('')}</ul>`);
   });
 });
 
@@ -41,6 +46,31 @@ app.get('/api/v0/books/:ean', function(req, res) {
     res.send({
       title: book.title,
       ean: book.ean
+    });
+  });
+});
+
+// Books POST
+app.post('/api/v0/books/:ean', function(req, res) {
+  Book.findOne({ ean: req.params.ean }, function(err, book) {
+    if (book) {
+      res.status(409).send({
+        error: `Book with EAN ${req.params.ean} already exists`
+      });
+      return;
+    }
+    book = new Book({
+      ean: req.params.ean,
+      title: req.body.title
+    });
+    book.save(function(err) {
+      if (err) {
+        res.status(500).send({
+          error: err
+        });
+        return;
+      }
+      res.send();
     });
   });
 });
