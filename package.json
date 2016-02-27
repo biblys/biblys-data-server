@@ -1,6 +1,6 @@
 {
-  "name": "Biblys Data Server",
-  "version": "1.0.0",
+  "name": "biblys-data-server",
+  "version": "0.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
