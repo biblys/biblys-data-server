@@ -19,12 +19,29 @@ var Book = mongoose.model('Book', {
   deletedAt: Date,
 });
 
+// Home page
 app.get('/', function(req, res) {
   Book.find({}, function(err, books) {
     books = books.map(function(book) {
       return `<li>${book.title} (${book.ean})</li>`;
     });
     res.send(`<ul>${books.join()}</ul>`);
+  });
+});
+
+// Books GET
+app.get('/api/v0/books/:ean', function(req, res) {
+  Book.findOne({ ean: req.params.ean }, function(err, book) {
+    if (!book) {
+      res.status(404).send({
+        error: `Cannot find a book with EAN ${req.params.ean}`
+      });
+      return;
+    }
+    res.send({
+      title: book.title,
+      ean: book.ean
+    });
   });
 });
 
