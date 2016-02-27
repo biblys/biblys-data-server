@@ -4,14 +4,17 @@ const app = require('express')();
 const bodyParser = require("body-parser");
 const mongoose = require('mongoose');
 
-const port = 8080;
+// App settings
+const port = process.env.PORT || 8080;
+const mongo_url = process.env.MONGO_URL || 'mongodb://localhost/biblys';
 
 // Body parser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Mongo
-mongoose.connect('mongodb://localhost/biblys');
+mongoose.connect(mongo_url);
+console.log(`Connected to mongodb at ${mongo_url}`);
 
 var Book = mongoose.model('Book', {
   title: String,
@@ -76,4 +79,4 @@ app.post('/api/v0/books/:ean', function(req, res) {
 });
 
 app.listen(port);
-console.log('Biblys Data Server listening on port 8080.');
+console.log(`Biblys Data Server listening on port ${port}.`);
