@@ -3,11 +3,15 @@
 const app = require('express')();
 const bodyParser = require("body-parser");
 const mongoose = require('mongoose');
-const gk = require('generate-key');
 
 // App settings
 const port = process.env.PORT || 8080;
 const mongo_url = process.env.MONGO_URL || 'mongodb://localhost/biblys';
+
+// Models
+const models = require('./models');
+const Book = models.Book;
+const User = models.User;
 
 // Body parser
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -16,34 +20,6 @@ app.use(bodyParser.json());
 // Mongo
 mongoose.connect(mongo_url);
 console.log(`Connected to mongodb at ${mongo_url}`);
-
-// User model
-var User = mongoose.model('User', {
-  apiKey: {
-    type: String,
-    default: function() {
-      return gk.generateKey(32);
-    }
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: Date,
-  deletedAt: Date
-});
-
-// Book model
-var Book = mongoose.model('Book', {
-  title: String,
-  ean: String,
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: Date,
-  deletedAt: Date
-});
 
 // Authenticate
 var authenticate = function(req, callback) {
@@ -88,13 +64,13 @@ app.get('/api/v0/books/:ean', function(req, res) {
 });
 
 // Books POST
-app.post('/api/v0/books/:ean', function(req, res) {
+app.post('/api/v0/books/', function(req, res) {
   authenticate(req, function(success) {
     if (!success) {
       res.status(403).send();
       return;
     }
-    Book.findOne({ ean: req.params.ean }, function(err, book) {
+    Book.findOne({ ean: req.body.ean }, function(err, book) {
       if (book) {
         res.status(409).send({
           error: `Book with EAN ${req.params.ean} already exists`
@@ -102,7 +78,7 @@ app.post('/api/v0/books/:ean', function(req, res) {
         return;
       }
       book = new Book({
-        ean: req.params.ean,
+        ean: req.body.ean,
         title: req.body.title
       });
       book.save(function(err) {

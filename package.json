@@ -8,7 +8,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "MONGO_URL=mongodb://localhost/biblys-data-test mocha",
+    "test": "MONGO_URL=mongodb://localhost/biblys-data-test mocha tests.js",
     "start": "node index.js"
   },
   "author": "Clément Bourgoin <cb@nokto.net> (http://nokto.net/)",
