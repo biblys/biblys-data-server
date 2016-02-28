@@ -3,6 +3,7 @@
 const app = require('express')();
 const bodyParser = require("body-parser");
 const mongoose = require('mongoose');
+const gk = require('generate-key');
 
 // App settings
 const port = process.env.PORT || 8080;
@@ -16,6 +17,23 @@ app.use(bodyParser.json());
 mongoose.connect(mongo_url);
 console.log(`Connected to mongodb at ${mongo_url}`);
 
+// User model
+var User = mongoose.model('User', {
+  apiKey: {
+    type: String,
+    default: function() {
+      return gk.generateKey(32);
+    }
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: Date,
+  deletedAt: Date
+});
+
+// Book model
 var Book = mongoose.model('Book', {
   title: String,
   ean: String,
@@ -24,7 +42,7 @@ var Book = mongoose.model('Book', {
     default: Date.now
   },
   updatedAt: Date,
-  deletedAt: Date,
+  deletedAt: Date
 });
 
 // Home page
@@ -73,7 +91,23 @@ app.post('/api/v0/books/:ean', function(req, res) {
         });
         return;
       }
-      res.send();
+      res.status(201).send();
+    });
+  });
+});
+
+// Users POST
+app.post('/api/v0/users/', function(req, res) {
+  const user = new User();
+  user.save(function(err) {
+    if (err) {
+      res.status(500).send({
+        error: err
+      });
+      return;
+    }
+    res.status(201).send({
+      apiKey: user.apiKey
     });
   });
 });
