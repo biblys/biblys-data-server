@@ -29,3 +29,11 @@ Currently, only the GET method is public.
 ## Test
 
 * `npm test`
+
+
+## Changelog
+
+### 0.1.0 (2016-02-28)
+* First release
+* Basic Book and User models
+* Basic book GET and PUT controllers
