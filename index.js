@@ -142,3 +142,5 @@ app.post('/api/v0/users/', function(req, res) {
 
 app.listen(port);
 console.log(`Biblys Data Server listening on port ${port}.`);
+
+module.exports = app;
