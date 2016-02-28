@@ -45,6 +45,22 @@ var Book = mongoose.model('Book', {
   deletedAt: Date
 });
 
+// Authenticate
+var authenticate = function(req, callback) {
+  User.findOne({ apiKey: req.get('Authorization') }, function(err, user) {
+    if (err) {
+      callback(false, 'An error occured while authentication');
+      console.log(err);
+      return;
+    }
+    if (user) {
+      callback(true, user);
+      return;
+    }
+    callback(false, 'Invalid credentials');
+  });
+};
+
 // Home page
 app.get('/', function(req, res) {
   Book.find({}, function(err, books) {
@@ -73,41 +89,53 @@ app.get('/api/v0/books/:ean', function(req, res) {
 
 // Books POST
 app.post('/api/v0/books/:ean', function(req, res) {
-  Book.findOne({ ean: req.params.ean }, function(err, book) {
-    if (book) {
-      res.status(409).send({
-        error: `Book with EAN ${req.params.ean} already exists`
-      });
+  authenticate(req, function(success) {
+    if (!success) {
+      res.status(403).send();
       return;
     }
-    book = new Book({
-      ean: req.params.ean,
-      title: req.body.title
-    });
-    book.save(function(err) {
-      if (err) {
-        res.status(500).send({
-          error: err
+    Book.findOne({ ean: req.params.ean }, function(err, book) {
+      if (book) {
+        res.status(409).send({
+          error: `Book with EAN ${req.params.ean} already exists`
         });
         return;
       }
-      res.status(201).send();
+      book = new Book({
+        ean: req.params.ean,
+        title: req.body.title
+      });
+      book.save(function(err) {
+        if (err) {
+          res.status(500).send({
+            error: err
+          });
+          return;
+        }
+        res.status(201).send();
+      });
     });
   });
 });
 
 // Users POST
 app.post('/api/v0/users/', function(req, res) {
-  const user = new User();
-  user.save(function(err) {
-    if (err) {
-      res.status(500).send({
-        error: err
-      });
+  authenticate(req, function(success) {
+    if (!success) {
+      res.status(403).send();
       return;
     }
-    res.status(201).send({
-      apiKey: user.apiKey
+    const user = new User();
+    user.save(function(err) {
+      if (err) {
+        res.status(500).send({
+          error: err
+        });
+        return;
+      }
+      res.status(201).send({
+        apiKey: user.apiKey
+      });
     });
   });
 });
