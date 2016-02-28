@@ -19,7 +19,6 @@ app.use(bodyParser.json());
 
 // Mongo
 mongoose.connect(mongo_url);
-console.log(`Connected to mongodb at ${mongo_url}`);
 
 // Authenticate
 var authenticate = function(req, callback) {
@@ -41,9 +40,14 @@ var authenticate = function(req, callback) {
 app.get('/', function(req, res) {
   Book.find({}, function(err, books) {
     books = books.map(function(book) {
-      return `<li>${book.title} (${book.ean})</li>`;
+      return `<li>
+          <a href="/api/v0/books/${book.ean}">${book.title}</a>
+        </li>`;
     });
-    res.send(`<ul>${books.join('')}</ul>`);
+    res.send(`
+      <h1>Biblys Data</h1>
+      <a href="https://github.com/biblys/biblys-data-server">Read me</a>
+      <ul>${books.join('')}</ul>`);
   });
 });
 
