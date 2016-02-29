@@ -18,9 +18,9 @@ interested.
 Currently, only the GET method is public.
 
 
-## Install 
+## Install
 
-* Install node & npm
+* Install node & mongodb
 * `git clone https://github.com/biblys/biblys-data-server.git && cd biblys-data-server`
 * `npm install`
 * `npm start`
