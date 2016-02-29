@@ -74,7 +74,28 @@ describe('Users', function() {
 
   });
 
-  it('should create a SINGLE User on POST');
+  describe('POST /api/v0/users/ ', function() {
+
+    it('should not be able to create a user without authentication', function(done) {
+      chai.request(server)
+        .post(`/api/v0/users/`)
+        .end(function(err, res){
+          res.should.have.status(403);
+          done();
+      });
+    });
+
+    it('should add a user when authenticated', function(done) {
+      chai.request(server)
+        .post(`/api/v0/users/`)
+        .set('Authorization', 'key')
+        .end(function(err, res) {
+          res.should.have.status(201);
+          done();
+      });
+    });
+
+  });
 });
 
 describe('Books', function() {
