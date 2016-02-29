@@ -33,7 +33,10 @@ Currently, only the GET method is public.
 
 ## Changelog
 
+### 0.1.1 (2016-02-29)
+* Fixed authenticating with empty API key
+
 ### 0.1.0 (2016-02-28)
 * First release
-* Basic Book and User models
-* Basic book GET and PUT controllers
+* Added basic Book and User models
+* Added basic book create and read controllers

@@ -10,6 +10,9 @@ const models = require('./models');
 const Book = models.Book;
 const User = models.User;
 
+// Helpers
+const authenticate = require('./helpers').authenticate;
+
 describe('Web', function() {
   it('should display home page on / GET', function(done) {
     chai.request(server)
@@ -18,6 +21,80 @@ describe('Web', function() {
         res.should.have.status(200);
         done();
       });
+  });
+});
+
+describe('Users', function() {
+
+  User.collection.drop();
+
+  beforeEach(function(done) {
+    const user = new User({ apiKey: 'key' });
+    const userWithoutKey = new User({ apiKey: '' });
+    user.save(function(err) {
+      const user = new User({
+        apiKey: 'key'
+      });
+      userWithoutKey.save(function(err) {
+        done();
+      });
+    });
+  });
+
+  afterEach(function(done){
+    User.collection.drop();
+    done();
+  });
+
+  describe('authenticate method', function() {
+
+    it('should authenticate with correct credentials', function(done) {
+      var req = { get: function() { return 'key'; } };
+      authenticate(req, function(success) {
+        success.should.be.true;
+        done();
+      });
+    });
+
+    it('should not authenticate with incorrect credentials', function(done) {
+      var req = { get: function() { return 'wrong key'; } };
+      authenticate(req, function(success) {
+        success.should.be.false;
+        done();
+      });
+    });
+
+    it('should not authenticate with empty credentials', function(done) {
+      var req = { get: function() { return ''; } };
+      authenticate(req, function(success) {
+        success.should.be.false;
+        done();
+      });
+    });
+
+  });
+
+  describe('POST /api/v0/users/ ', function() {
+
+    it('should not be able to create a user without authentication', function(done) {
+      chai.request(server)
+        .post(`/api/v0/users/`)
+        .end(function(err, res){
+          res.should.have.status(403);
+          done();
+      });
+    });
+
+    it('should add a user when authenticated', function(done) {
+      chai.request(server)
+        .post(`/api/v0/users/`)
+        .set('Authorization', 'key')
+        .end(function(err, res) {
+          res.should.have.status(201);
+          done();
+      });
+    });
+
   });
 });
 
