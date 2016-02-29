@@ -13,28 +13,15 @@ const models = require('./models');
 const Book = models.Book;
 const User = models.User;
 
+// Helpers
+const authenticate = require('./helpers').authenticate;
+
 // Body parser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Mongo
 mongoose.connect(mongo_url);
-
-// Authenticate
-var authenticate = function(req, callback) {
-  User.findOne({ apiKey: req.get('Authorization') }, function(err, user) {
-    if (err) {
-      callback(false, 'An error occured while authentication');
-      console.log(err);
-      return;
-    }
-    if (user) {
-      callback(true, user);
-      return;
-    }
-    callback(false, 'Invalid credentials');
-  });
-};
 
 // Home page
 app.get('/', function(req, res) {
