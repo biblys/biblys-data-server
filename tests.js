@@ -81,6 +81,7 @@ describe('Users', function() {
         .post(`/api/v0/users/`)
         .end(function(err, res){
           res.should.have.status(403);
+          res.body.error.should.equal('Authentication required');
           done();
       });
     });
@@ -143,6 +144,8 @@ describe('Books', function() {
         .get(`/api/v0/books/9781234567890`)
         .end(function(err, res){
           res.should.have.status(404);
+          res.body.should.have.property('error');
+          res.body.error.should.equal('Cannot find a book with EAN 9781234567890');
           done();
       });
     });
@@ -157,6 +160,8 @@ describe('Books', function() {
         .send({ 'ean': '9782953595109', 'title': 'Bara Yogoï' })
         .end(function(err, res){
           res.should.have.status(403);
+          res.body.should.have.property('error');
+          res.body.error.should.equal('Authentication required');
           done();
       });
     });
@@ -179,6 +184,8 @@ describe('Books', function() {
         .send({ 'ean': '9791091146135', 'title': 'Chants du cauchemar et de la nuit' })
         .end(function(err, res) {
           res.should.have.status(409);
+          res.body.should.have.property('error');
+          res.body.error.should.equal('Book with EAN undefined already exists');
           done();
       });
     });
@@ -186,5 +193,4 @@ describe('Books', function() {
   });
 
   it('should update a SINGLE book on PUT /api/v0/books/:ean');
-  it('should delete a SINGLE book on DELETE /api/v0/books/:ean');
 });

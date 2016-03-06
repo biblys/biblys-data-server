@@ -58,7 +58,7 @@ app.get('/api/v0/books/:ean', function(req, res) {
 app.post('/api/v0/books/', function(req, res) {
   authenticate(req, function(success, user) {
     if (!success) {
-      res.status(403).send();
+      res.status(403).send({ error: 'Authentication required' });
       return;
     }
     Book.findOne({ ean: req.body.ean }, function(err, book) {
@@ -90,7 +90,7 @@ app.post('/api/v0/books/', function(req, res) {
 app.post('/api/v0/users/', function(req, res) {
   authenticate(req, function(success) {
     if (!success) {
-      res.status(403).send();
+      res.status(403).send({ error: 'Authentication required' });
       return;
     }
     const user = new User();
