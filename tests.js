@@ -190,6 +190,32 @@ describe('Books', function() {
       });
     });
 
+    it('should not be able to add a book without EAN', function(done) {
+      chai.request(server)
+        .post(`/api/v0/books/`)
+        .set('Authorization', 'key')
+        .send({ 'title': 'Chants du cauchemar et de la nuit' })
+        .end(function(err, res) {
+          res.should.have.status(400);
+          res.body.should.have.property('error');
+          res.body.error.should.equal('Book validation failed');
+          done();
+      });
+    });
+
+    it('should not be able to add a book without title', function(done) {
+      chai.request(server)
+        .post(`/api/v0/books/`)
+        .set('Authorization', 'key')
+        .send({ 'ean': '9782953595109' })
+        .end(function(err, res) {
+          res.should.have.status(400);
+          res.body.should.have.property('error');
+          res.body.error.should.equal('Book validation failed');
+          done();
+      });
+    });
+
   });
 
   it('should update a SINGLE book on PUT /api/v0/books/:ean');

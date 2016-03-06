@@ -21,8 +21,14 @@ var User = mongoose.model('User', {
 
 // Book model
 var Book = mongoose.model('Book', {
-  title: String,
-  ean: String,
+  ean: {
+    type: String,
+    required: true
+  },
+  title: {
+    type: String,
+    required: true
+  },
   createdBy: String,
   createdAt: {
     type: Date,

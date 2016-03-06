@@ -75,8 +75,8 @@ app.post('/api/v0/books/', function(req, res) {
       });
       book.save(function(err) {
         if (err) {
-          res.status(500).send({
-            error: err
+          res.status(400).send({
+            error: err.message
           });
           return;
         }
