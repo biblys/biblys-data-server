@@ -2,6 +2,7 @@
 
 const gk = require('generate-key');
 const mongoose = require('mongoose');
+const ISBN = require('isbn-utils');
 
 // User model
 var User = mongoose.model('User', {
@@ -23,7 +24,13 @@ var User = mongoose.model('User', {
 var Book = mongoose.model('Book', {
   ean: {
     type: String,
-    required: true
+    required: true,
+    validate: {
+      validator: function(ean) {
+        return ISBN.parse(ean) !== null && ISBN.parse(ean).isIsbn13();
+      },
+      message: '{VALUE} is not a valid ISBN-13'
+    }
   },
   title: {
     type: String,

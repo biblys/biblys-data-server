@@ -203,6 +203,19 @@ describe('Books', function() {
       });
     });
 
+    it('should not be able to add a book with an invalid ISBN', function(done) {
+      chai.request(server)
+        .post(`/api/v0/books/`)
+        .set('Authorization', 'key')
+        .send({ 'ean': '979105', 'title': 'Chants du cauchemar et de la nuit' })
+        .end(function(err, res) {
+          res.should.have.status(400);
+          res.body.should.have.property('error');
+          res.body.error.should.equal('Book validation failed');
+          done();
+      });
+    });
+
     it('should not be able to add a book without title', function(done) {
       chai.request(server)
         .post(`/api/v0/books/`)
