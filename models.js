@@ -23,6 +23,7 @@ var User = mongoose.model('User', {
 var Book = mongoose.model('Book', {
   title: String,
   ean: String,
+  createdBy: String,
   createdAt: {
     type: Date,
     default: Date.now

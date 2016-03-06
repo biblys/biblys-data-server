@@ -56,7 +56,7 @@ app.get('/api/v0/books/:ean', function(req, res) {
 
 // Books POST
 app.post('/api/v0/books/', function(req, res) {
-  authenticate(req, function(success) {
+  authenticate(req, function(success, user) {
     if (!success) {
       res.status(403).send();
       return;
@@ -70,7 +70,8 @@ app.post('/api/v0/books/', function(req, res) {
       }
       book = new Book({
         ean: req.body.ean,
-        title: req.body.title
+        title: req.body.title,
+        createdBy: user._id
       });
       book.save(function(err) {
         if (err) {
