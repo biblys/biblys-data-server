@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const ISBN = require('isbn-utils');
 
 // User model
-var User = mongoose.model('User', {
+const User = mongoose.model('User', {
   apiKey: {
     type: String,
     required: true,
@@ -22,7 +22,7 @@ var User = mongoose.model('User', {
 });
 
 // Book model
-var Book = mongoose.model('Book', {
+const Book = mongoose.model('Book', {
   ean: {
     type: String,
     required: true,
@@ -46,7 +46,19 @@ var Book = mongoose.model('Book', {
   deletedAt: Date
 });
 
+// Publisher
+const Publisher = mongoose.model('Publiser', {
+  name: {
+    type: String,
+    required: true,
+    minlength: 2,
+    maxlength: 256
+  },
+  createdBy: String,
+}, { timestamps: true });
+
 module.exports = {
   Book: Book,
-  User: User
+  User: User,
+  Publisher: Publisher
 };
