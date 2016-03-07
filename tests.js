@@ -131,9 +131,9 @@ describe('Books', function() {
           res.should.have.status(200);
           res.should.be.json;
           res.body.should.be.an('object');
-          res.body.should.have.property('title');
           res.body.should.have.property('ean');
           res.body.ean.should.equal('9791091146135');
+          res.body.should.have.property('title');
           res.body.title.should.equal('Chants du cauchemar et de la nuit');
           done();
       });
@@ -154,6 +154,21 @@ describe('Books', function() {
 
   describe('POST /api/v0/books/ ', function() {
 
+    it('should add a book', function(done) {
+      chai.request(server)
+        .post(`/api/v0/books/`)
+        .set('Authorization', 'key')
+        .send({ 'ean': '9782953595109', 'title': 'Bara Yogoï' })
+        .end(function(err, res) {
+          res.should.have.status(201);
+          res.body.should.have.property('ean');
+          res.body.ean.should.equal('9782953595109');
+          res.body.should.have.property('title');
+          res.body.title.should.equal('Bara Yogoï');
+          done();
+      });
+    });
+
     it('should not be able to create a book without authentication', function(done) {
       chai.request(server)
         .post(`/api/v0/books/`)
@@ -162,17 +177,6 @@ describe('Books', function() {
           res.should.have.status(403);
           res.body.should.have.property('error');
           res.body.error.should.equal('Authentication required');
-          done();
-      });
-    });
-
-    it('should add a book when authenticated', function(done) {
-      chai.request(server)
-        .post(`/api/v0/books/`)
-        .set('Authorization', 'key')
-        .send({ 'ean': '9782953595109', 'title': 'Bara Yogoï' })
-        .end(function(err, res) {
-          res.should.have.status(201);
           done();
       });
     });

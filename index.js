@@ -80,7 +80,10 @@ app.post('/api/v0/books/', function(req, res) {
           });
           return;
         }
-        res.status(201).send();
+        res.status(201).send({
+          ean: book.ean,
+          title: book.title
+        });
       });
     });
   });
