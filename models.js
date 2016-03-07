@@ -8,6 +8,7 @@ const ISBN = require('isbn-utils');
 var User = mongoose.model('User', {
   apiKey: {
     type: String,
+    required: true,
     default: function() {
       return gk.generateKey(32);
     }

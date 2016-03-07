@@ -30,14 +30,11 @@ describe('Users', function() {
 
   beforeEach(function(done) {
     const user = new User({ apiKey: 'key' });
-    const userWithoutKey = new User({ apiKey: '' });
     user.save(function(err) {
-      const user = new User({
-        apiKey: 'key'
-      });
-      userWithoutKey.save(function(err) {
-        done();
-      });
+      if (err) {
+        throw err;
+      }
+      done();
     });
   });
 
@@ -76,6 +73,18 @@ describe('Users', function() {
 
   describe('POST /api/v0/users/ ', function() {
 
+    it('should add a user when authenticated', function(done) {
+      chai.request(server)
+        .post(`/api/v0/users/`)
+        .set('Authorization', 'key')
+        .send({ 'name': 'User', 'email': 'user@example.com', 'url': 'http://example.com' })
+        .end(function(err, res) {
+          res.should.have.status(201);
+          res.body.should.have.property('apiKey');
+          done();
+      });
+    });
+
     it('should not be able to create a user without authentication', function(done) {
       chai.request(server)
         .post(`/api/v0/users/`)
@@ -86,12 +95,13 @@ describe('Users', function() {
       });
     });
 
-    it('should add a user when authenticated', function(done) {
+    it('should not add a user without name', function(done) {
       chai.request(server)
         .post(`/api/v0/users/`)
         .set('Authorization', 'key')
         .end(function(err, res) {
           res.should.have.status(201);
+          res.body.should.have.property('apiKey');
           done();
       });
     });
