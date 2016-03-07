@@ -47,7 +47,7 @@ const Book = mongoose.model('Book', {
 });
 
 // Publisher
-const Publisher = mongoose.model('Publiser', {
+const Publisher = mongoose.model('Publisher', {
   name: {
     type: String,
     required: true,
@@ -55,7 +55,7 @@ const Publisher = mongoose.model('Publiser', {
     maxlength: 256
   },
   createdBy: String,
-}, { timestamps: true });
+});
 
 module.exports = {
   Book: Book,

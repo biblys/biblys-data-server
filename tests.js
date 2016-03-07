@@ -7,8 +7,9 @@ chai.use(chaiHttp);
 
 // Models
 const models = require('./models');
-const Book = models.Book;
 const User = models.User;
+const Book = models.Book;
+const Publisher = models.Publisher;
 
 // Helpers
 const authenticate = require('./helpers').authenticate;
@@ -129,6 +130,7 @@ describe('Books', function() {
   });
   afterEach(function(done){
     Book.collection.drop();
+    User.collection.drop();
     done();
   });
 
@@ -179,7 +181,7 @@ describe('Books', function() {
       });
     });
 
-    it('should not be able to create a book without authentication', function(done) {
+    it('should not be able to add a book without authentication', function(done) {
       chai.request(server)
         .post(`/api/v0/books/`)
         .send({ 'ean': '9782953595109', 'title': 'Bara Yogoï' })
@@ -199,7 +201,7 @@ describe('Books', function() {
         .end(function(err, res) {
           res.should.have.status(409);
           res.body.should.have.property('error');
-          res.body.error.should.equal('Book with EAN undefined already exists');
+          res.body.error.should.equal('Book with EAN 9791091146135 already exists');
           done();
       });
     });
@@ -246,4 +248,84 @@ describe('Books', function() {
   });
 
   it('should update a SINGLE book on PUT /api/v0/books/:ean');
+});
+
+
+describe('Publishers', function() {
+
+  Publisher.collection.drop();
+
+  beforeEach(function(done) {
+    const publisher = new Publisher({
+      name: 'Le Bélial\'',
+    });
+    publisher.save(function(err) {
+      const user = new User({ apiKey: 'key' });
+      user.save(function(err) {
+        done();
+      });
+    });
+  });
+  afterEach(function(done) {
+    Publisher.collection.drop();
+    User.collection.drop();
+    done();
+  });
+
+  describe('POST /api/v0/publishers/', function() {
+
+    it('should add a publisher', function(done) {
+      chai.request(server)
+        .post(`/api/v0/publishers/`)
+        .set('Authorization', 'key')
+        .send({ 'name': 'Dystopia' })
+        .end(function(err, res) {
+          res.should.have.status(201);
+          res.body.should.have.property('id');
+          res.body.should.have.property('name');
+          res.body.name.should.equal('Dystopia');
+          done();
+      });
+    });
+
+    it('should not be able to add a publisher without authentication', function(done) {
+      chai.request(server)
+        .post(`/api/v0/publishers/`)
+        .send({ 'name': 'Dystopia' })
+        .end(function(err, res) {
+          res.should.have.status(403);
+          res.body.should.have.property('error');
+          res.body.error.should.equal('Authentication required');
+          done();
+      });
+    });
+
+    it('should not be able to add a publisher that already exists', function(done) {
+      chai.request(server)
+        .post(`/api/v0/publishers/`)
+        .set('Authorization', 'key')
+        .send({ 'name': 'Le Bélial\'' })
+        .end(function(err, res) {
+          res.should.have.status(409);
+          res.body.should.have.property('error');
+          res.body.error.should.equal('Publisher with name Le Bélial\' already exists');
+          done();
+      });
+    });
+
+    it('should not be able to add a book without a name', function(done) {
+      chai.request(server)
+        .post(`/api/v0/publishers/`)
+        .set('Authorization', 'key')
+        .send({ })
+        .end(function(err, res) {
+          res.should.have.status(400);
+          res.body.should.have.property('error');
+          res.body.error.should.equal('Publisher validation failed');
+          done();
+      });
+    });
+
+  });
+
 });
