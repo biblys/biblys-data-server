@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 
 // App settings
 const port = process.env.PORT || 8080;
-const mongoUrl = process.env.mongoUrl || 'mongodb://localhost/biblys';
+const mongoUrl = process.env.MONGO_URL || 'mongodb://localhost/biblys';
 
 // Models
 const models = require('./models');
@@ -23,6 +23,7 @@ app.use(bodyParser.json());
 
 // Mongo
 mongoose.connect(mongoUrl);
+process.stdout.write(`Mongoose connected to ${mongoUrl}\n`);
 
 // Home page
 app.get('/', function(req, res) {
@@ -158,6 +159,6 @@ app.post('/api/v0/users/', function(req, res) {
 });
 
 app.listen(port);
-process.stdout.write(`Biblys Data Server listening on port ${port}.`);
+process.stdout.write(`Biblys Data Server listening on port ${port}.\n`);
 
 module.exports = app;
