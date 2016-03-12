@@ -9,10 +9,9 @@ const port = process.env.PORT || 8080;
 const mongoUrl = process.env.MONGO_URL || 'mongodb://localhost/biblys';
 
 // Models
-const models = require('./models');
-const Book = models.Book;
-const User = models.User;
-const Publisher = models.Publisher;
+const User      = require('./models/user');
+const Book      = require('./models/book');
+const Publisher = require('./models/publisher');
 
 // Helpers
 const authenticate = require('./helpers').authenticate;

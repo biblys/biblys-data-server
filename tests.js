@@ -6,10 +6,9 @@ chai.should();
 chai.use(chaiHttp);
 
 // Models
-const models = require('./models');
-const User = models.User;
-const Book = models.Book;
-const Publisher = models.Publisher;
+const User      = require('./models/user');
+const Book      = require('./models/book');
+const Publisher = require('./models/publisher');
 
 // Helpers
 const authenticate = require('./helpers').authenticate;
