@@ -1,12 +1,12 @@
 'use strict';
 
 const app = require('express')();
-const bodyParser = require("body-parser");
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 // App settings
 const port = process.env.PORT || 8080;
-const mongo_url = process.env.MONGO_URL || 'mongodb://localhost/biblys';
+const mongoUrl = process.env.mongoUrl || 'mongodb://localhost/biblys';
 
 // Models
 const models = require('./models');
@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Mongo
-mongoose.connect(mongo_url);
+mongoose.connect(mongoUrl);
 
 // Home page
 app.get('/', function(req, res) {
@@ -32,6 +32,7 @@ app.get('/', function(req, res) {
           <a href="/api/v0/books/${book.ean}">${book.title}</a>
         </li>`;
     });
+
     res.send(`
       <h1>Biblys Data</h1>
       <a href="https://github.com/biblys/biblys-data-server">Read me</a>
@@ -48,10 +49,11 @@ app.get('/api/v0/books/:ean', function(req, res) {
       });
       return;
     }
+
     res.send({
       ean: book.ean,
       isbn: book.isbn,
-      title: book.title,
+      title: book.title
     });
   });
 });
@@ -63,6 +65,7 @@ app.post('/api/v0/books/', function(req, res) {
       res.status(403).send({ error: 'Authentication required' });
       return;
     }
+
     Book.findOne({ ean: req.body.ean }, function(err, book) {
       if (book) {
         res.status(409).send({
@@ -70,6 +73,7 @@ app.post('/api/v0/books/', function(req, res) {
         });
         return;
       }
+
       book = new Book({
         ean: req.body.ean,
         title: req.body.title,
@@ -82,6 +86,7 @@ app.post('/api/v0/books/', function(req, res) {
           });
           return;
         }
+
         res.status(201).send({
           ean: book.ean,
           title: book.title
@@ -98,6 +103,7 @@ app.post('/api/v0/publishers/', function(req, res) {
       res.status(403).send({ error: 'Authentication required' });
       return;
     }
+
     Publisher.findOne({ name: req.body.name }, function(err, publisher) {
       if (publisher) {
         res.status(409).send({
@@ -105,6 +111,7 @@ app.post('/api/v0/publishers/', function(req, res) {
         });
         return;
       }
+
       publisher = new Publisher({
         name: req.body.name,
         createdBy: user._id
@@ -116,6 +123,7 @@ app.post('/api/v0/publishers/', function(req, res) {
           });
           return;
         }
+
         res.status(201).send({
           id: publisher._id,
           name: publisher.name
@@ -132,6 +140,7 @@ app.post('/api/v0/users/', function(req, res) {
       res.status(403).send({ error: 'Authentication required' });
       return;
     }
+
     const user = new User();
     user.save(function(err) {
       if (err) {
@@ -140,6 +149,7 @@ app.post('/api/v0/users/', function(req, res) {
         });
         return;
       }
+
       res.status(201).send({
         apiKey: user.apiKey
       });
@@ -148,6 +158,6 @@ app.post('/api/v0/users/', function(req, res) {
 });
 
 app.listen(port);
-console.log(`Biblys Data Server listening on port ${port}.`);
+process.stdout.write(`Biblys Data Server listening on port ${port}.`);
 
 module.exports = app;

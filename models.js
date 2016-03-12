@@ -31,6 +31,7 @@ const BookSchema = new mongoose.Schema({
       validator: function(ean) {
         return ISBN.parse(ean) !== null && ISBN.parse(ean).isIsbn13();
       },
+
       message: '{VALUE} is not a valid ISBN-13'
     }
   },
@@ -46,9 +47,10 @@ const BookSchema = new mongoose.Schema({
   updatedAt: Date,
   deletedAt: Date
 });
-BookSchema.virtual('isbn').get(function () {
+BookSchema.virtual('isbn').get(function() {
   return ISBN.parse(this.ean).asIsbn13(true);
 });
+
 const Book = mongoose.model('Book', BookSchema);
 
 // Publisher
@@ -59,7 +61,7 @@ const Publisher = mongoose.model('Publisher', {
     minlength: 2,
     maxlength: 256
   },
-  createdBy: String,
+  createdBy: String
 });
 
 module.exports = {
