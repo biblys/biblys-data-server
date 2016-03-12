@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const ISBN = require('isbn-utils');
 
 // User model
-const User = mongoose.model('User', {
+const UserSchema = new mongoose.Schema({
   apiKey: {
     type: String,
     required: true,
@@ -20,9 +20,10 @@ const User = mongoose.model('User', {
   updatedAt: Date,
   deletedAt: Date
 });
+const User = mongoose.model('User', UserSchema);
 
 // Book model
-const Book = mongoose.model('Book', {
+const BookSchema = new mongoose.Schema({
   ean: {
     type: String,
     required: true,
@@ -45,6 +46,10 @@ const Book = mongoose.model('Book', {
   updatedAt: Date,
   deletedAt: Date
 });
+BookSchema.virtual('isbn').get(function () {
+  return ISBN.parse(this.ean).asIsbn13(true);
+});
+const Book = mongoose.model('Book', BookSchema);
 
 // Publisher
 const Publisher = mongoose.model('Publisher', {

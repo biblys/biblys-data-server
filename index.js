@@ -49,8 +49,9 @@ app.get('/api/v0/books/:ean', function(req, res) {
       return;
     }
     res.send({
+      ean: book.ean,
+      isbn: book.isbn,
       title: book.title,
-      ean: book.ean
     });
   });
 });

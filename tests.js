@@ -145,13 +145,15 @@ describe('Books', function() {
           res.body.should.be.an('object');
           res.body.should.have.property('ean');
           res.body.ean.should.equal('9791091146135');
+          res.body.should.have.property('isbn');
+          res.body.isbn.should.equal('979-10-91146-13-5');
           res.body.should.have.property('title');
           res.body.title.should.equal('Chants du cauchemar et de la nuit');
           done();
       });
     });
 
-    it('should respond 404 when querying a book that doesn\'t exist', function(done) {
+    it('should respond 404 when querying a book that does not exist', function(done) {
       chai.request(server)
         .get(`/api/v0/books/9781234567890`)
         .end(function(err, res){
