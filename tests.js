@@ -14,6 +14,12 @@ const Publisher = models.Publisher;
 // Helpers
 const authenticate = require('./helpers').authenticate;
 
+// JSCS
+require('mocha-jscs')();
+
+// ESlint
+require('mocha-eslint')(['.']);
+
 describe('Web', function() {
   it('should display home page on / GET', function(done) {
     chai.request(server)
