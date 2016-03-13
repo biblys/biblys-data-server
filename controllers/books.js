@@ -1,7 +1,7 @@
 const express = require('express');
 const router  = express.Router();
 const Book    = require('../models/book');
-const authenticate = require('../helpers').authenticate;
+const auth    = require('../middlewares/auth');
 
 // Books GET
 router.get('/:ean', function(req, res) {
@@ -22,38 +22,31 @@ router.get('/:ean', function(req, res) {
 });
 
 // Books POST
-router.post('/', function(req, res) {
-  authenticate(req, function(success, user) {
-    if (!success) {
-      res.status(403).send({ error: 'Authentication required' });
+router.post('/', auth, function(req, res) {
+  Book.findOne({ ean: req.body.ean }, function(err, book) {
+    if (book) {
+      res.status(409).send({
+        error: `Book with EAN ${req.body.ean} already exists`
+      });
       return;
     }
 
-    Book.findOne({ ean: req.body.ean }, function(err, book) {
-      if (book) {
-        res.status(409).send({
-          error: `Book with EAN ${req.body.ean} already exists`
+    book = new Book({
+      ean: req.body.ean,
+      title: req.body.title,
+      createdBy: req.user._id
+    });
+    book.save(function(err) {
+      if (err) {
+        res.status(400).send({
+          error: err.message
         });
         return;
       }
 
-      book = new Book({
-        ean: req.body.ean,
-        title: req.body.title,
-        createdBy: user._id
-      });
-      book.save(function(err) {
-        if (err) {
-          res.status(400).send({
-            error: err.message
-          });
-          return;
-        }
-
-        res.status(201).send({
-          ean: book.ean,
-          title: book.title
-        });
+      res.status(201).send({
+        ean: book.ean,
+        title: book.title
       });
     });
   });

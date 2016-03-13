@@ -10,8 +10,8 @@ const User      = require('./models/user');
 const Book      = require('./models/book');
 const Publisher = require('./models/publisher');
 
-// Helpers
-const authenticate = require('./helpers').authenticate;
+// middlewares
+const auth = require('./middlewares/auth');
 
 // JSCS
 require('mocha-jscs')();
@@ -50,34 +50,19 @@ describe('Users', function() {
     done();
   });
 
-  describe('authenticate method', function() {
+  describe('authenticate middleware', function() {
 
     it('should authenticate with correct credentials', function(done) {
       var req = { get: function() { return 'key'; } };
 
-      authenticate(req, function(success) {
-        success.should.be.true;
+      auth(req, null, function() {
+        req.should.have.property('user');
         done();
       });
     });
 
-    it('should not authenticate with incorrect credentials', function(done) {
-      var req = { get: function() { return 'wrong key'; } };
-
-      authenticate(req, function(success) {
-        success.should.be.false;
-        done();
-      });
-    });
-
-    it('should not authenticate with empty credentials', function(done) {
-      var req = { get: function() { return ''; } };
-
-      authenticate(req, function(success) {
-        success.should.be.false;
-        done();
-      });
-    });
+    it('should not authenticate with incorrect credentials');
+    it('should not authenticate with empty credentials');
 
   });
 
@@ -99,8 +84,8 @@ describe('Users', function() {
       chai.request(server)
         .post('/api/v0/users/')
         .end(function(err, res) {
-          res.should.have.status(403);
-          res.body.error.should.equal('Authentication required');
+          res.should.have.status(401);
+          res.body.error.should.equal('API key was not provided');
           done();
         });
     });
@@ -198,9 +183,9 @@ describe('Books', function() {
         .post('/api/v0/books/')
         .send({ ean: '9782953595109', title: 'Bara Yogoï' })
         .end(function(err, res) {
-          res.should.have.status(403);
+          res.should.have.status(401);
           res.body.should.have.property('error');
-          res.body.error.should.equal('Authentication required');
+          res.body.error.should.equal('API key was not provided');
           done();
         });
     });
@@ -305,9 +290,9 @@ describe('Publishers', function() {
         .post('/api/v0/publishers/')
         .send({ name: 'Dystopia' })
         .end(function(err, res) {
-          res.should.have.status(403);
+          res.should.have.status(401);
           res.body.should.have.property('error');
-          res.body.error.should.equal('Authentication required');
+          res.body.error.should.equal('API key was not provided');
           done();
         });
     });
