@@ -1,5 +1,6 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const express = require('express');
 const server = require('./index');
 
 chai.should();
@@ -52,17 +53,44 @@ describe('Users', function() {
 
   describe('authenticate middleware', function() {
 
-    it('should authenticate with correct credentials', function(done) {
-      var req = { get: function() { return 'key'; } };
-
-      auth(req, null, function() {
-        req.should.have.property('user');
-        done();
-      });
+    const app = express();
+    app.get('/', auth, function(req, res) {
+      res.end();
     });
 
-    it('should not authenticate with incorrect credentials');
-    it('should not authenticate with empty credentials');
+    it('should authenticate with correct credentials', function(done) {
+      chai.request(app)
+        .get('/')
+        .set('Authorization', 'key')
+        .end(function(err, res) {
+          res.should.have.status(200);
+          done();
+        });
+    });
+
+    it('should not authenticate with incorrect credentials', function(done) {
+      chai.request(app)
+        .get('/')
+        .set('Authorization', 'wrong key')
+        .end(function(err, res) {
+          res.should.have.status(401);
+          res.should.have.property('error');
+          res.body.error.should.equal('API key is invalid');
+          done();
+        });
+    });
+
+    it('should not authenticate with empty credentials', function(done) {
+      chai.request(app)
+        .get('/')
+        .set('Authorization', '')
+        .end(function(err, res) {
+          res.should.have.status(401);
+          res.should.have.property('error');
+          res.body.error.should.equal('API key was not provided');
+          done();
+        });
+    });
 
   });
 
