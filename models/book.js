@@ -19,6 +19,18 @@ const BookSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  publisher: {
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true
+    },
+    name: {
+      type: String,
+      required: true,
+      minlength: 2,
+      maxlength: 256
+    }
+  },
   createdBy: String,
   createdAt: {
     type: Date,
