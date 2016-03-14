@@ -3,6 +3,23 @@ const router  = express.Router();
 const Publisher = require('../models/publisher');
 const auth = require('../middlewares/auth');
 
+// Publishers GET
+router.get('/:id', function(req, res) {
+  Publisher.findById(req.params.id, function(err, publisher) {
+    if (!publisher) {
+      res.status(404).send({
+        error: `Cannot find a publisher with id ${req.params.id}`
+      });
+      return;
+    }
+
+    res.status(200).send({
+      id: publisher._id,
+      name: publisher.name
+    });
+  });
+});
+
 // Publishers POST
 router.post('/', auth, function(req, res) {
   Publisher.findOne({ name: req.body.name }, function(err, publisher) {
