@@ -4,5 +4,11 @@ describe('Linters', function() {
   require('mocha-jscs')();
 
   // ESlint
-  require('mocha-eslint')(['.']);
+  require('mocha-eslint')([
+    'controllers',
+    'middlewares',
+    'models',
+    'tests',
+    'index.js'
+  ]);
 });
