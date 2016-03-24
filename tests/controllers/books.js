@@ -29,7 +29,7 @@ describe('Books', function() {
         ean: '9791091146135',
         title: 'Chants du cauchemar et de la nuit',
         publisher: {
-          _id: publisher._id,
+          id: publisher._id,
           name: publisher.name
         }
       });
@@ -69,8 +69,8 @@ describe('Books', function() {
           res.body.should.have.property('title');
           res.body.title.should.equal('Chants du cauchemar et de la nuit');
           res.body.should.have.property('publisher');
-          res.body.publisher.should.have.property('_id');
-          res.body.publisher._id.should.equal(publisherId.toString());
+          res.body.publisher.should.have.property('id');
+          res.body.publisher.id.should.equal(publisherId.toString());
           res.body.publisher.should.have.property('name');
           res.body.publisher.name.should.equal('Dystopia');
           done();
@@ -190,8 +190,8 @@ describe('Books', function() {
           res.body.should.have.property('title');
           res.body.title.should.equal('Bara Yogoï');
           res.body.should.have.property('publisher');
-          res.body.publisher.should.have.property('_id');
-          res.body.publisher._id.should.equal(publisherId.toString());
+          res.body.publisher.should.have.property('id');
+          res.body.publisher.id.should.equal(publisherId.toString());
           res.body.publisher.should.have.property('name');
           res.body.publisher.name.should.equal('Dystopia');
           done();

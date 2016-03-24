@@ -54,7 +54,7 @@ router.post('/', auth, function(req, res) {
         ean: req.body.ean,
         title: req.body.title,
         publisher: {
-          _id: publisher._id,
+          id: publisher._id,
           name: publisher.name
         },
         createdBy: req.user._id

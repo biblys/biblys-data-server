@@ -20,7 +20,7 @@ const BookSchema = new mongoose.Schema({
     required: true
   },
   publisher: {
-    _id: {
+    id: {
       type: mongoose.Schema.Types.ObjectId,
       required: true
     },
