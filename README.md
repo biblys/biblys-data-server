@@ -13,6 +13,37 @@ interested.
 
 `curl http://data.biblys.fr/api/v0/books/9791091146203`
 
+Example response:
+
+```json
+{
+  "ean": 9791091146203,
+  "title": "Chants du cauchemar et de la nuit",
+  "publisher": {
+    "id": "1234",
+    "name": "Dystopia"
+  }
+}
+```
+
+### Create, update or delete a book
+
+Currently, only the GET method is public.
+
+
+### Get a publisher
+
+`curl http://data.biblys.fr/api/v0/publishers/1234`
+
+Example response:
+
+```json
+{
+  "id": "1234",
+  "name": "Dystopia"
+}
+```
+
 ### Create, update or delete a book
 
 Currently, only the GET method is public.
