@@ -113,6 +113,11 @@ describe('Books', function() {
           res.should.have.status(409);
           res.body.should.have.property('error');
           res.body.error.should.equal('Book with EAN 9791091146135 already exists');
+          res.body.should.have.property('book');
+          res.body.book.should.have.property('ean');
+          res.body.book.ean.should.equal('9791091146135');
+          res.body.book.should.have.property('title');
+          res.body.book.title.should.equal('Chants du cauchemar et de la nuit');
           done();
         });
     });

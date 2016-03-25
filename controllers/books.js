@@ -30,7 +30,11 @@ router.post('/', auth, function(req, res) {
   Book.findOne({ ean: req.body.ean }, function(err, book) {
     if (book) {
       res.status(409).send({
-        error: `Book with EAN ${req.body.ean} already exists`
+        error: `Book with EAN ${req.body.ean} already exists`,
+        book: {
+          ean: book.ean,
+          title: book.title
+        }
       });
       return;
     }
