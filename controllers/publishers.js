@@ -25,11 +25,8 @@ router.post('/', auth, function(req, res) {
   Publisher.findOne({ name: req.body.name }, function(err, publisher) {
     if (publisher) {
       res.status(409).send({
-        error: `Publisher with name ${req.body.name} already exists`,
-        publisher: {
-          id: publisher._id,
-          name: publisher.name
-        }
+        id: publisher._id,
+        name: publisher.name
       });
       return;
     }
