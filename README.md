@@ -67,6 +67,7 @@ Currently, only the GET method is public.
 ### DEV
 * Book title and ean property are now required
 * Book ean must be a valid ISBN-13
+* Add Publisher model, create and read controllers
 
 ### 0.1.1 (2016-02-29)
 * Fixed authenticating with empty API key

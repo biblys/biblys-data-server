@@ -100,6 +100,11 @@ describe('Publishers', function() {
           res.should.have.status(409);
           res.body.should.have.property('error');
           res.body.error.should.equal('Publisher with name Le Bélial\' already exists');
+          res.body.should.have.property('publisher');
+          res.body.publisher.should.have.property('id');
+          res.body.publisher.id.should.equal(publisherId.toString());
+          res.body.publisher.should.have.property('name');
+          res.body.publisher.name.should.equal('Le Bélial\'');
           done();
         });
     });
