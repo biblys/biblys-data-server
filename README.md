@@ -17,7 +17,8 @@ Example response:
 
 ```json
 {
-  "ean": 9791091146203,
+  "ean": "9791091146203",
+  "isbn": "979-10-91146-20-3",
   "title": "Chants du cauchemar et de la nuit",
   "publisher": {
     "id": "1234",
