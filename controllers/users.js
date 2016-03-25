@@ -1,0 +1,23 @@
+const express = require('express');
+const router  = express.Router();
+const User    = require('../models/user');
+const auth    = require('../middlewares/auth');
+
+// Users POST
+router.post('/', auth, function(req, res) {
+  const user = new User();
+  user.save(function(err) {
+    if (err) {
+      res.status(500).send({
+        error: err
+      });
+      return;
+    }
+
+    res.status(201).send({
+      apiKey: user.apiKey
+    });
+  });
+});
+
+module.exports = router;

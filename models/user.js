@@ -1,12 +1,11 @@
-'use strict';
-
 const gk = require('generate-key');
 const mongoose = require('mongoose');
 
 // User model
-var User = mongoose.model('User', {
+const UserSchema = new mongoose.Schema({
   apiKey: {
     type: String,
+    required: true,
     default: function() {
       return gk.generateKey(32);
     }
@@ -19,19 +18,4 @@ var User = mongoose.model('User', {
   deletedAt: Date
 });
 
-// Book model
-var Book = mongoose.model('Book', {
-  title: String,
-  ean: String,
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: Date,
-  deletedAt: Date
-});
-
-module.exports = {
-  Book: Book,
-  User: User
-};
+module.exports = mongoose.model('User', UserSchema);
