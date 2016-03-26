@@ -4,14 +4,14 @@ Biblys Data is an open data server for books that aims at easing sharing of
 bibliographic data betweens publishers, booksellers, reviews site and everyone
 interested.
 
-[Demo](http://data.biblys.fr/)
+[Demo](https://data.biblys.fr/)
 
 
 ## API Usage
 
 ### Get a book
 
-`curl http://data.biblys.fr/api/v0/books/9791091146203`
+`curl https://data.biblys.fr/api/v0/books/9791091146203`
 
 Example response:
 
@@ -34,7 +34,7 @@ Currently, only the GET method is public.
 
 ### Get a publisher
 
-`curl http://data.biblys.fr/api/v0/publishers/1234`
+`curl https://data.biblys.fr/api/v0/publishers/1234`
 
 Example response:
 
