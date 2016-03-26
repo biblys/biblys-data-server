@@ -6,7 +6,31 @@ const Publisher = require('../models/publisher');
 
 const auth    = require('../middlewares/auth');
 
-// Books GET
+// Books GET all
+router.get('/', function(req, res) {
+  Book.find({}, function(err, books) {
+    if (err) throw err;
+
+    books = books.map(function(book) {
+      return {
+        ean: book.ean,
+        isbn: book.isbn,
+        title: book.title,
+        publisher: {
+          id: book.publisher.id,
+          name: book.publisher.name
+        }
+      };
+    });
+
+    res.status(200).send({
+      results: books.length,
+      books: books
+    });
+  });
+});
+
+// Books GET single
 router.get('/:ean', function(req, res) {
   Book.findOne({ ean: req.params.ean }, function(err, book) {
     if (!book) {

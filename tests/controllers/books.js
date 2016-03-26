@@ -53,6 +53,36 @@ describe('Books', function() {
     done();
   });
 
+  describe('GET /api/v0/books/', function() {
+
+    it('should return an array of books', function(done) {
+      chai.request(server)
+        .get('/api/v0/books/')
+        .end(function(err, res) {
+          res.should.have.status(200);
+          res.should.be.json;
+          res.body.should.have.property('results');
+          res.body.results.should.equal(1);
+          res.body.should.have.property('books');
+          res.body.books.should.be.an('array');
+          res.body.books[0].should.be.an('object');
+          res.body.books[0].should.have.property('ean');
+          res.body.books[0].ean.should.equal('9791091146135');
+          res.body.books[0].should.have.property('isbn');
+          res.body.books[0].isbn.should.equal('979-10-91146-13-5');
+          res.body.books[0].should.have.property('title');
+          res.body.books[0].title.should.equal('Chants du cauchemar et de la nuit');
+          res.body.books[0].should.have.property('publisher');
+          res.body.books[0].publisher.should.have.property('id');
+          res.body.books[0].publisher.id.should.equal(publisherId.toString());
+          res.body.books[0].publisher.should.have.property('name');
+          res.body.books[0].publisher.name.should.equal('Dystopia');
+          done();
+        });
+    });
+
+  });
+
   describe('GET /api/v0/books/:ean', function() {
 
     it('should list a SINGLE book', function(done) {
