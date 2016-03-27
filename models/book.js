@@ -39,8 +39,21 @@ const BookSchema = new mongoose.Schema({
   updatedAt: Date,
   deletedAt: Date
 });
+
 BookSchema.virtual('isbn').get(function() {
   return ISBN.parse(this.ean).asIsbn13(true);
+});
+
+BookSchema.virtual('response').get(function() {
+  return {
+    ean: this.ean,
+    isbn: this.isbn,
+    title: this.title,
+    publisher: {
+      id: this.publisher.id,
+      name: this.publisher.name
+    }
+  };
 });
 
 module.exports = mongoose.model('Book', BookSchema);

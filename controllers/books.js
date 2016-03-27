@@ -12,15 +12,7 @@ router.get('/', function(req, res) {
     if (err) throw err;
 
     books = books.map(function(book) {
-      return {
-        ean: book.ean,
-        isbn: book.isbn,
-        title: book.title,
-        publisher: {
-          id: book.publisher.id,
-          name: book.publisher.name
-        }
-      };
+      return book.response;
     });
 
     res.status(200).send({
@@ -55,10 +47,7 @@ router.post('/', auth, function(req, res) {
     if (book) {
       res.status(409).send({
         error: `Book with EAN ${req.body.ean} already exists`,
-        book: {
-          ean: book.ean,
-          title: book.title
-        }
+        book: book.response
       });
       return;
     }
@@ -96,11 +85,7 @@ router.post('/', auth, function(req, res) {
           return;
         }
 
-        res.status(201).send({
-          ean: book.ean,
-          title: book.title,
-          publisher: book.publisher
-        });
+        res.status(201).send(book.response);
       });
 
     });
