@@ -67,6 +67,7 @@ Currently, only the GET method is public.
 
 ### DEV
 * Added a controller to get all books on GET /books/
+* Only admin users can create other users
 
 ### 0.2.0 (2016-03-25)
 * Book title and ean property are now required
