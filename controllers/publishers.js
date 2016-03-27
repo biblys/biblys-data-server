@@ -13,10 +13,7 @@ router.get('/:id', function(req, res) {
       return;
     }
 
-    res.status(200).send({
-      id: publisher._id,
-      name: publisher.name
-    });
+    res.status(200).send(publisher.response);
   });
 });
 
@@ -24,10 +21,7 @@ router.get('/:id', function(req, res) {
 router.post('/', auth, function(req, res) {
   Publisher.findOne({ name: req.body.name }, function(err, publisher) {
     if (publisher) {
-      res.status(409).send({
-        id: publisher._id,
-        name: publisher.name
-      });
+      res.status(409).send(publisher.response);
       return;
     }
 
@@ -43,10 +37,7 @@ router.post('/', auth, function(req, res) {
         return;
       }
 
-      res.status(201).send({
-        id: publisher._id,
-        name: publisher.name
-      });
+      res.status(201).send(publisher.response);
     });
   });
 });

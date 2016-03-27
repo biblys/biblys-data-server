@@ -65,6 +65,9 @@ Currently, only the GET method is public.
 
 ## Changelog
 
+### DEV
+* Added a controller to get all books on GET /books/
+
 ### 0.2.0 (2016-03-25)
 * Book title and ean property are now required
 * Book ean must be a valid ISBN-13

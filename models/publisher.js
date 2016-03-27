@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-module.exports = mongoose.model('Publisher', {
+const PublisherSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -9,3 +9,12 @@ module.exports = mongoose.model('Publisher', {
   },
   createdBy: String
 });
+
+PublisherSchema.virtual('response').get(function() {
+  return {
+    id: this.id,
+    name: this.name
+  };
+});
+
+module.exports = mongoose.model('Publisher', PublisherSchema);
