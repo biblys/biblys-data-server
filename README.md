@@ -1,4 +1,6 @@
-# Biblys Data Server
+# Biblys Data Server 
+
+[![Build Status](https://travis-ci.org/biblys/biblys-data-server.svg?branch=master)](https://travis-ci.org/biblys/biblys-data-server)
 
 Biblys Data is an open data server for books that aims at easing sharing of
 bibliographic data betweens publishers, booksellers, reviews site and everyone
