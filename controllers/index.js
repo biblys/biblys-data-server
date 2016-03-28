@@ -3,6 +3,7 @@ const router  = express.Router();
 const Book    = require('../models/book');
 
 router.use('/api/v0/books', require('./books'));
+router.use('/api/v0/contributors', require('./contributors'));
 router.use('/api/v0/publishers', require('./publishers'));
 router.use('/api/v0/users', require('./users'));
 

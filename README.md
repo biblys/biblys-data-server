@@ -66,6 +66,7 @@ Currently, only the GET method is public.
 ## Changelog
 
 ### DEV
+* Added Contributor model, create and read controllers
 * Added a controller to get all books on GET /books/
 * Added a controller to get all publishers on GET /publishers/
 * Only admin users can create other users
