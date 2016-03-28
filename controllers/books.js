@@ -1,3 +1,5 @@
+'use strict';
+
 const express = require('express');
 const router  = express.Router();
 
@@ -8,17 +10,26 @@ const auth    = require('../middlewares/auth');
 
 // Books GET all
 router.get('/', function(req, res) {
-  Book.find({}, function(err, books) {
-    if (err) throw err;
-
+  let total = 0;
+  const skip = parseInt(req.query.skip) || 0;
+  const totalQuery = Book.find({});
+  const limitQuery = Book.find({}).sort({ createdAt: -1 }).limit(10).skip(skip);
+  totalQuery.exec().then(function(books) {
+    total = books.length;
+    return limitQuery.exec();
+  }).then(function(books) {
     books = books.map(function(book) {
       return book.response;
     });
 
     res.status(200).send({
-      results: books.length,
-      books: books
+      count: books.length,
+      total: total,
+      skipped: skip,
+      results: books
     });
+  }).catch(function(err) {
+    throw err;
   });
 });
 
