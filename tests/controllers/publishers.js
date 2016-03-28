@@ -35,6 +35,30 @@ describe('Publishers', function() {
     done();
   });
 
+  describe('GET /api/v0/publishers/', function() {
+    it('should return an array of publishers', function(done) {
+      chai.request(server)
+        .get('/api/v0/publishers/')
+        .end(function(err, res) {
+          res.should.have.status(200);
+          res.should.be.json;
+          res.body.should.have.property('count');
+          res.body.count.should.equal(1);
+          res.body.should.have.property('total');
+          res.body.total.should.equal(1);
+          res.body.should.have.property('skipped');
+          res.body.skipped.should.equal(0);
+          res.body.results.should.be.an('array');
+          res.body.results[0].should.be.an('object');
+          res.body.results[0].should.have.property('id');
+          res.body.results[0].id.should.equal(publisherId.toString());
+          res.body.results[0].should.have.property('name');
+          res.body.results[0].name.should.equal('Le Bélial\'');
+          done();
+        });
+    });
+  });
+
   describe('GET /api/v0/publishers/:id', function() {
 
     it('should get a publisher', function(done) {
