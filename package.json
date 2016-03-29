@@ -20,6 +20,7 @@
     "express": "^4.13.4",
     "generate-key": "0.0.6",
     "isbn-utils": "^1.0.0",
+    "milligram": "^1.1.0",
     "mongoose": "^4.4.4",
     "style-loader": "^0.13.1",
     "webpack": "^1.12.14"
