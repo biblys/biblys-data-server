@@ -1,14 +1,16 @@
 
 describe('Linters', function() {
-  // JSCS
-  require('mocha-jscs')();
-
-  // ESlint
-  require('mocha-eslint')([
+  const paths = [
     'controllers',
     'middlewares',
     'models',
     'tests',
     'index.js'
-  ]);
+  ];
+
+  // JSCS
+  require('mocha-jscs')(paths);
+
+  // ESlint
+  require('mocha-eslint')(paths);
 });
