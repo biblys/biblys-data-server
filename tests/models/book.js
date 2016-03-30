@@ -1,6 +1,7 @@
 'use strict';
 
-const Book = require('../../models/book.js');
+const Book        = require('../../models/book.js');
+const Contributor = require('../../models/contributor.js');
 
 const book = new Book({
   ean: '9791091146135',
@@ -34,4 +35,20 @@ describe('Book model', function() {
     done();
   });
 
+  it('should correctly add a contributor', function(done) {
+
+    const contributor = new Contributor({
+      firstName: 'Thomas',
+      lastName: 'Ligotti'
+    });
+    book.addContributor(contributor, 'author');
+
+    book.contributors.should.be.an('array');
+    book.contributors[0].should.have.property('id');
+    book.contributors[0].should.have.property('name');
+    book.contributors[0].name.should.equal('Thomas Ligotti');
+    book.contributors[0].should.have.property('role');
+    book.contributors[0].role.should.equal('author');
+    done();
+  });
 });

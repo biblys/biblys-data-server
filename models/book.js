@@ -2,7 +2,25 @@
 const mongoose = require('mongoose');
 const ISBN = require('isbn-utils');
 
-// Book model
+const ContributorSchema = new mongoose.Schema ({
+  id: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
+  },
+  name: {
+    type: String,
+    required: true,
+    minlength: 2,
+    maxlength: 128
+  },
+  role: {
+    type: String,
+    required: true,
+    minlength: 2,
+    maxlength: 32
+  }
+});
+
 const BookSchema = new mongoose.Schema({
   ean: {
     type: String,
@@ -19,6 +37,7 @@ const BookSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  contributors: [ContributorSchema],
   publisher: {
     id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -54,6 +73,14 @@ BookSchema.virtual('response').get(function() {
       name: this.publisher.name
     }
   };
+});
+
+BookSchema.method('addContributor', function(contributor, role) {
+  this.contributors.push({
+    id: contributor._id,
+    name: contributor.name,
+    role: role
+  });
 });
 
 module.exports = mongoose.model('Book', BookSchema);
