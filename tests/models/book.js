@@ -3,20 +3,41 @@
 const Book        = require('../../models/book.js');
 const Contributor = require('../../models/contributor.js');
 
-const book = new Book({
-  ean: '9791091146135',
-  title: 'Chants du cauchemar et de la nuit',
-  publisher: {
-    id: '1234',
-    name: 'Dystopia'
-  },
-  createdBy: '123'
-});
+let book;
+let contributor;
 
 describe('Book model', function() {
 
+  before(function(done) {
+    book = new Book({
+      ean: '9791091146135',
+      title: 'Chants du cauchemar et de la nuit',
+      publisher: {
+        id: '1234',
+        name: 'Dystopia'
+      },
+      createdBy: '123'
+    });
+    contributor = new Contributor({
+      firstName: 'Thomas',
+      lastName: 'Ligotti'
+    });
+    book.addContributor(contributor, 'author');
+    done();
+  });
+
   it('should correctly format an ISBN', function(done) {
     book.isbn.should.equal('979-10-91146-13-5');
+    done();
+  });
+
+  it('should correctly add a contributor', function(done) {
+    book.contributors.should.be.an('array');
+    book.contributors[0].should.have.property('id');
+    book.contributors[0].should.have.property('name');
+    book.contributors[0].name.should.equal('Thomas Ligotti');
+    book.contributors[0].should.have.property('role');
+    book.contributors[0].role.should.equal('author');
     done();
   });
 
@@ -32,23 +53,12 @@ describe('Book model', function() {
     book.response.publisher.should.have.property('id');
     book.response.publisher.should.have.property('name');
     book.response.publisher.name.should.equal('Dystopia');
-    done();
-  });
-
-  it('should correctly add a contributor', function(done) {
-
-    const contributor = new Contributor({
-      firstName: 'Thomas',
-      lastName: 'Ligotti'
-    });
-    book.addContributor(contributor, 'author');
-
-    book.contributors.should.be.an('array');
-    book.contributors[0].should.have.property('id');
-    book.contributors[0].should.have.property('name');
-    book.contributors[0].name.should.equal('Thomas Ligotti');
-    book.contributors[0].should.have.property('role');
-    book.contributors[0].role.should.equal('author');
+    book.response.contributors.should.be.an('array');
+    book.response.contributors[0].should.have.property('id');
+    book.response.contributors[0].should.have.property('name');
+    book.response.contributors[0].name.should.equal('Thomas Ligotti');
+    book.response.contributors[0].should.have.property('role');
+    book.response.contributors[0].role.should.equal('author');
     done();
   });
 });

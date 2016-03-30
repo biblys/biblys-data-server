@@ -71,7 +71,14 @@ BookSchema.virtual('response').get(function() {
     publisher: {
       id: this.publisher.id,
       name: this.publisher.name
-    }
+    },
+    contributors: this.contributors.map(function(contributor) {
+      return {
+        id: contributor.id,
+        name: contributor.name,
+        role: contributor.role
+      };
+    })
   };
 });
 
