@@ -4,7 +4,7 @@ const Book        = require('../../models/book.js');
 const Contributor = require('../../models/contributor.js');
 
 let book;
-let contributor;
+let author;
 
 describe('Book model', function() {
 
@@ -18,11 +18,11 @@ describe('Book model', function() {
       },
       createdBy: '123'
     });
-    contributor = new Contributor({
+    author = new Contributor({
       firstName: 'Thomas',
       lastName: 'Ligotti'
     });
-    book.addContributor(contributor, 'author');
+    book.addAuthor(author);
     done();
   });
 
@@ -32,12 +32,10 @@ describe('Book model', function() {
   });
 
   it('should correctly add a contributor', function(done) {
-    book.contributors.should.be.an('array');
-    book.contributors[0].should.have.property('id');
-    book.contributors[0].should.have.property('name');
-    book.contributors[0].name.should.equal('Thomas Ligotti');
-    book.contributors[0].should.have.property('role');
-    book.contributors[0].role.should.equal('author');
+    book.authors.should.be.an('array');
+    book.authors[0].should.have.property('id');
+    book.authors[0].should.have.property('name');
+    book.authors[0].name.should.equal('Thomas Ligotti');
     done();
   });
 
@@ -53,12 +51,10 @@ describe('Book model', function() {
     book.response.publisher.should.have.property('id');
     book.response.publisher.should.have.property('name');
     book.response.publisher.name.should.equal('Dystopia');
-    book.response.contributors.should.be.an('array');
-    book.response.contributors[0].should.have.property('id');
-    book.response.contributors[0].should.have.property('name');
-    book.response.contributors[0].name.should.equal('Thomas Ligotti');
-    book.response.contributors[0].should.have.property('role');
-    book.response.contributors[0].role.should.equal('author');
+    book.response.authors.should.be.an('array');
+    book.response.authors[0].should.have.property('id');
+    book.response.authors[0].should.have.property('name');
+    book.response.authors[0].name.should.equal('Thomas Ligotti');
     done();
   });
 });
