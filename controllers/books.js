@@ -86,6 +86,13 @@ router.post('/', auth, function(req, res) {
     // Get authors
     Contributor.find({ $or: authorQuery }, function(err, authors) {
 
+      if (authors.length === 0) {
+        res.status(400).send({
+          error: 'There should be at least one author'
+        });
+        return;
+      }
+
       const bookAuthors = authors.map(function(author) {
         return {
           id: author._id,

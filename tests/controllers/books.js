@@ -237,9 +237,58 @@ describe('Books', function() {
         });
     });
 
-    it('should not add a book with a unknown publisher');
+    it('should not add a book with a unknown publisher', function(done) {
+      chai.request(server)
+        .post('/api/v0/books/')
+        .set('Authorization', 'key')
+        .send({
+          ean: '9782953595109',
+          title: 'Chants du cauchemar et de la nuit',
+          publisher: '570141a473ec3c8c0ad1a5cc',
+          authors: JSON.stringify([{ id: authorId }])
+        })
+        .end(function(err, res) {
+          res.should.have.status(400);
+          res.body.should.have.property('error');
+          res.body.error.should.equal('Cannot find a publisher with id 570141a473ec3c8c0ad1a5cc');
+          done();
+        });
+    });
 
-    it('should not add a book with a unknown author');
+    it('should not add a book without authors', function(done) {
+      chai.request(server)
+        .post('/api/v0/books/')
+        .set('Authorization', 'key')
+        .send({
+          ean: '9782953595109',
+          title: 'Chants du cauchemar et de la nuit',
+          publisher: publisherId
+        })
+        .end(function(err, res) {
+          res.should.have.status(400);
+          res.body.should.have.property('error');
+          res.body.error.should.equal('Authors parameter is required');
+          done();
+        });
+    });
+
+    it('should not add a book with a unknown author', function(done) {
+      chai.request(server)
+        .post('/api/v0/books/')
+        .set('Authorization', 'key')
+        .send({
+          ean: '9782953595109',
+          title: 'Chants du cauchemar et de la nuit',
+          publisher: publisherId,
+          authors: JSON.stringify([{ id: '570141a473ec3c8c0ad1a5cc' }])
+        })
+        .end(function(err, res) {
+          res.should.have.status(400);
+          res.body.should.have.property('error');
+          res.body.error.should.equal('There should be at least one author');
+          done();
+        });
+    });
 
     it('should add a book', function(done) {
       chai.request(server)
