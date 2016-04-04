@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const ContributorSchema = new mongoose.Schema({
   firstName: {
     type: String,
-    minlength: 2,
     maxlength: 64,
     default: ''
   },

@@ -116,6 +116,24 @@ describe('Contributors', function() {
         });
     });
 
+    it('should add a contributor without first name', function(done) {
+      chai.request(server)
+        .post('/api/v0/contributors/')
+        .set('Authorization', 'key')
+        .send({ lastName: 'Voltaire' })
+        .end(function(err, res) {
+          res.should.have.status(201);
+          res.body.should.have.property('id');
+          res.body.should.have.property('name');
+          res.body.name.should.equal('Voltaire');
+          res.body.should.have.property('firstName');
+          res.body.firstName.should.equal('');
+          res.body.should.have.property('lastName');
+          res.body.lastName.should.equal('Voltaire');
+          done();
+        });
+    });
+
     it('should not be able to add a contributor without authentication', function(done) {
       chai.request(server)
         .post('/api/v0/contributors/')

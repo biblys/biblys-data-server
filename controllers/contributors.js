@@ -47,26 +47,25 @@ router.get('/:id', function(req, res) {
 // Contributors POST
 router.post('/', auth, function(req, res) {
 
-  Contributor.findOne({
-    firstName: req.body.firstName || '',
-    lastName: req.body.lastName
-  }, function(err, contributor) {
+  const contributorAttributes = {};
+  contributorAttributes.lastName = req.body.lastName;
+
+  if (req.body.firstName) {
+    contributorAttributes.firstName = req.body.firstName;
+  }
+
+  Contributor.findOne(contributorAttributes, function(err, contributor) {
     if (err) throw err;
     if (contributor) {
       res.status(409).send(contributor.response);
       return;
     }
 
-    contributor = new Contributor({
-      firstName: req.body.firstName || '',
-      lastName: req.body.lastName,
-      createdBy: req.user._id
-    });
+    contributorAttributes.createdBy = req.user._id;
+    contributor = new Contributor(contributorAttributes);
     contributor.save(function(err) {
       if (err) {
-        res.status(400).send({
-          error: err.message
-        });
+        res.status(400).send({ error: err.message });
         return;
       }
 
