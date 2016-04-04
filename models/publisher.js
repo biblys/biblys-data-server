@@ -7,7 +7,13 @@ const PublisherSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 256
   },
-  createdBy: String
+  createdBy: String,
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: Date,
+  deletedAt: Date
 });
 
 PublisherSchema.virtual('response').get(function() {
