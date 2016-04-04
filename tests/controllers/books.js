@@ -24,14 +24,6 @@ describe('Books', function() {
     const publisher = new Publisher({
       name: 'Dystopia'
     });
-    const book = new Book({
-      ean: '9791091146135',
-      title: 'Chants du cauchemar et de la nuit',
-      publisher: {
-        id: publisher._id,
-        name: publisher.name
-      }
-    });
     const author = new Contributor({
       firstName: 'Thomas',
       lastName: 'Ligotti'
@@ -45,6 +37,14 @@ describe('Books', function() {
       author.save(function(err, author) {
         if (err) throw err;
         authorId = author._id;
+        const book = new Book({
+          ean: '9791091146135',
+          title: 'Chants du cauchemar et de la nuit',
+          publisher: {
+            id: publisher._id,
+            name: publisher.name
+          }
+        });
         book.addAuthor(author);
         book.save(function(err) {
           if (err) throw err;
