@@ -86,7 +86,7 @@ router.post('/', auth, function(req, res) {
     // Get authors
     Contributor.find({ $or: authorQuery }, function(err, authors) {
 
-      if (authors.length === 0) {
+      if (typeof authors === 'undefined' || authors.length === 0) {
         res.status(400).send({
           error: 'There should be at least one author'
         });
