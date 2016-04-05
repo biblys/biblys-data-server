@@ -3,6 +3,7 @@
 const chai     = require('chai');
 const chaiHttp = require('chai-http');
 const server   = require('../../index');
+const mongoose = require('mongoose');
 
 const Book        = require('../../models/book');
 const Contributor = require('../../models/contributor');
@@ -238,19 +239,20 @@ describe('Books', function() {
     });
 
     it('should not add a book with a unknown publisher', function(done) {
+      const publisherId = mongoose.Types.ObjectId();
       chai.request(server)
         .post('/api/v0/books/')
         .set('Authorization', 'key')
         .send({
           ean: '9782953595109',
           title: 'Chants du cauchemar et de la nuit',
-          publisher: '570141a473ec3c8c0ad1a5cc',
+          publisher: publisherId,
           authors: JSON.stringify([{ id: authorId }])
         })
         .end(function(err, res) {
           res.should.have.status(400);
           res.body.should.have.property('error');
-          res.body.error.should.equal('Cannot find a publisher with id 570141a473ec3c8c0ad1a5cc');
+          res.body.error.should.equal(`Cannot find a publisher with id ${publisherId}`);
           done();
         });
     });
@@ -280,7 +282,7 @@ describe('Books', function() {
           ean: '9782953595109',
           title: 'Chants du cauchemar et de la nuit',
           publisher: publisherId,
-          authors: JSON.stringify([{ id: '570141a473ec3c8c0ad1a5cc' }])
+          authors: JSON.stringify([{ id: mongoose.Types.ObjectId() }])
         })
         .end(function(err, res) {
           res.should.have.status(400);
