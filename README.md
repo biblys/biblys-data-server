@@ -69,7 +69,8 @@ Currently, only the GET method is public.
 
 ### DEV
 * Added Contributor model, create and read controllers
-* Added a required property authors to Book model
+* Added a required *authors* property to Book resource
+* Added a required *name* property to User resource
 * Added a controller to get all books on GET /books/
 * Added a controller to get all publishers on GET /publishers/
 * Improved home page style

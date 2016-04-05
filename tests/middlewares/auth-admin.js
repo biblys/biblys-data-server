@@ -11,11 +11,11 @@ const User      = require('../../models/user');
 const auth      = require('../../middlewares/auth');
 const authAdmin = require('../../middlewares/auth-admin');
 
-describe('authenticate middleware', function() {
+describe('authenticate admin middleware', function() {
 
   beforeEach(function(done) {
-    const user = new User({ apiKey: 'user_key' });
-    const admin = new User({ apiKey: 'admin_key', isAdmin: true });
+    const user = new User({ apiKey: 'user_key', name: 'User' });
+    const admin = new User({ apiKey: 'admin_key', name: 'Admin', isAdmin: true });
     user.save(function(err) {
       if (err) throw err;
 
@@ -42,7 +42,7 @@ describe('authenticate middleware', function() {
       });
   });
 
-  it('should not grand access to a user without admin privileges', function(done) {
+  it('should not grant access to a user without admin privileges', function(done) {
     chai.request(app)
       .get('/admin/')
       .set('Authorization', 'user_key')

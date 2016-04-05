@@ -22,7 +22,7 @@ describe('Publishers', function() {
     });
     publisher.save(function(err, publisher) {
       publisherId = publisher._id;
-      const user = new User({ apiKey: 'key' });
+      const user = new User({ apiKey: 'key', name: 'User' });
       user.save(function() {
         done();
       });

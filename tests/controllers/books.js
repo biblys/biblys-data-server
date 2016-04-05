@@ -29,9 +29,7 @@ describe('Books', function() {
       firstName: 'Thomas',
       lastName: 'Ligotti'
     });
-    const user = new User({
-      apiKey: 'key'
-    });
+    const user = new User({ apiKey: 'key', name: 'User' });
     publisher.save(function(err, publisher) {
       if (err) throw err;
       publisherId = publisher._id;

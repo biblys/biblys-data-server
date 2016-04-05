@@ -12,8 +12,8 @@ describe('Users', function() {
   User.collection.drop();
 
   beforeEach(function(done) {
-    const user  = new User({ apiKey: 'user_key' });
-    const admin = new User({ apiKey: 'admin_key', isAdmin: true });
+    const user  = new User({ apiKey: 'user_key', name: 'User' });
+    const admin = new User({ apiKey: 'admin_key', name: 'Admin', isAdmin: true });
     user.save(function(err) {
       if (err) throw err;
 
@@ -36,7 +36,7 @@ describe('Users', function() {
       chai.request(server)
         .post('/api/v0/users/')
         .set('Authorization', 'admin_key')
-        .send()
+        .send({ name: 'User' })
         .end(function(err, res) {
           res.should.have.status(201);
           res.body.should.have.property('apiKey');
@@ -65,7 +65,18 @@ describe('Users', function() {
         });
     });
 
-    it('should not add a user without name');
+    it('should not be able to add a user without a name', function(done) {
+      chai.request(server)
+        .post('/api/v0/users/')
+        .set('Authorization', 'admin_key')
+        .send()
+        .end(function(err, res) {
+          res.should.have.status(400);
+          res.body.should.have.property('error');
+          res.body.error.should.equal('Name parameter is required');
+          done();
+        });
+    });
 
   });
 });

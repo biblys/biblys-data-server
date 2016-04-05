@@ -23,7 +23,7 @@ describe('Contributors', function() {
     });
     contributor.save(function(err, contributor) {
       contributorId = contributor._id;
-      const user = new User({ apiKey: 'key' });
+      const user = new User({ apiKey: 'key', name: 'User' });
       user.save(function() {
         done();
       });
