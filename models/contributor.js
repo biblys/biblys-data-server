@@ -4,13 +4,19 @@ const ContributorSchema = new mongoose.Schema({
   firstName: {
     type: String,
     maxlength: 64,
-    default: ''
+    default: '',
+    set: function(value) {
+      return value.trim();
+    }
   },
   lastName: {
     type: String,
     required: true,
     minlength: 2,
-    maxlength: 64
+    maxlength: 64,
+    set: function(value) {
+      return value.trim();
+    }
   },
   createdBy: mongoose.Schema.Types.ObjectId,
   createdAt: {
