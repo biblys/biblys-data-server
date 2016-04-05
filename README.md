@@ -139,7 +139,7 @@ To be implemented.
 
 ## Changelog
 
-### DEV
+### 0.3.0 (2016-04-05)
 * Added Contributor model, create and read controllers
 * Added a required *authors* property to Book resource
 * Added a required *name* property to User resource
