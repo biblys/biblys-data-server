@@ -85,6 +85,7 @@ router.post('/', auth, function(req, res) {
 
     // Get authors
     Contributor.find({ $or: authorQuery }, function(err, authors) {
+      if (err) throw err;
 
       if (typeof authors === 'undefined' || authors.length === 0) {
         res.status(400).send({
@@ -101,7 +102,7 @@ router.post('/', auth, function(req, res) {
       });
 
       // Get publisher
-      Publisher.findOne({ _id: req.body.publisher }, function(err, publisher) {
+      Publisher.findById(req.body.publisher, function(err, publisher) {
         if (err) throw err;
 
         if (!publisher) {
