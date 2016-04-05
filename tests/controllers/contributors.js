@@ -150,7 +150,7 @@ describe('Contributors', function() {
       chai.request(server)
         .post('/api/v0/contributors/')
         .set('Authorization', 'key')
-        .send({ firstName: 'Thomas', lastName: 'Ligotti' })
+        .send({ firstName: 'Thomas ', lastName: 'Ligotti' })
         .end(function(err, res) {
           res.should.have.status(409);
           res.body.should.have.property('id');
@@ -172,7 +172,7 @@ describe('Contributors', function() {
         .end(function(err, res) {
           res.should.have.status(400);
           res.body.should.have.property('error');
-          res.body.error.should.equal('Contributor validation failed');
+          res.body.error.should.equal('Last name parameter is required');
           done();
         });
     });

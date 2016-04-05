@@ -48,10 +48,16 @@ router.get('/:id', function(req, res) {
 router.post('/', auth, function(req, res) {
 
   const contributorAttributes = {};
-  contributorAttributes.lastName = req.body.lastName;
+
+  if (!req.body.lastName) {
+    res.status(400).send({ error: 'Last name parameter is required' });
+    return;
+  }
+
+  contributorAttributes.lastName = req.body.lastName.trim();
 
   if (req.body.firstName) {
-    contributorAttributes.firstName = req.body.firstName;
+    contributorAttributes.firstName = req.body.firstName.trim();
   }
 
   Contributor.findOne(contributorAttributes, function(err, contributor) {
