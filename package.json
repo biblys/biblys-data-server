@@ -1,6 +1,6 @@
 {
   "name": "biblys-data-server",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "An open bibliographic data server",
   "homepage": "http://data.biblys.fr/",
   "repository": {
@@ -16,17 +16,21 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.15.0",
+    "css-loader": "^0.23.1",
     "express": "^4.13.4",
     "generate-key": "0.0.6",
     "isbn-utils": "^1.0.0",
-    "mongoose": "^4.4.4"
+    "milligram": "^1.1.0",
+    "mongoose": "^4.4.4",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.12.14"
   },
   "engines": {
     "node": "4.3.1"
   },
   "devDependencies": {
     "chai": "^3.2.0",
-    "chai-http": "^1.0.0",
+    "chai-http": "^2.0.0",
     "mocha": "^2.4.5",
     "mocha-eslint": "^2.0.1",
     "mocha-jscs": "^4.2.0"

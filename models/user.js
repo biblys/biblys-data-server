@@ -10,6 +10,16 @@ const UserSchema = new mongoose.Schema({
       return gk.generateKey(32);
     }
   },
+  name: {
+    type: String,
+    required: true,
+    minlength: 3,
+    maxlength: 64
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false
+  },
   createdAt: {
     type: Date,
     default: Date.now

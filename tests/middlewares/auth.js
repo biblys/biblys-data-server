@@ -14,11 +14,9 @@ const auth = require('../../middlewares/auth');
 describe('authenticate middleware', function() {
 
   beforeEach(function(done) {
-    const user = new User({ apiKey: 'key' });
+    const user = new User({ apiKey: 'key', name: 'User' });
     user.save(function(err) {
-      if (err) {
-        throw err;
-      }
+      if (err) throw err;
 
       done();
     });

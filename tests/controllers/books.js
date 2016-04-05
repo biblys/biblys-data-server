@@ -3,10 +3,12 @@
 const chai     = require('chai');
 const chaiHttp = require('chai-http');
 const server   = require('../../index');
+const mongoose = require('mongoose');
 
-const Book      = require('../../models/book');
-const Publisher = require('../../models/publisher');
-const User      = require('../../models/user');
+const Book        = require('../../models/book');
+const Contributor = require('../../models/contributor');
+const Publisher   = require('../../models/publisher');
+const User        = require('../../models/user');
 
 chai.should();
 chai.use(chaiHttp);
@@ -17,30 +19,38 @@ describe('Books', function() {
   Publisher.collection.drop();
 
   let publisherId;
+  let authorId;
 
   before(function(done) {
     const publisher = new Publisher({
       name: 'Dystopia'
     });
+    const author = new Contributor({
+      firstName: 'Thomas',
+      lastName: 'Ligotti'
+    });
+    const user = new User({ apiKey: 'key', name: 'User' });
     publisher.save(function(err, publisher) {
       if (err) throw err;
       publisherId = publisher._id;
-      const book = new Book({
-        ean: '9791091146135',
-        title: 'Chants du cauchemar et de la nuit',
-        publisher: {
-          id: publisher._id,
-          name: publisher.name
-        }
-      });
-      book.save(function(err) {
+      author.save(function(err, author) {
         if (err) throw err;
-        const user = new User({
-          apiKey: 'key'
+        authorId = author._id;
+        const book = new Book({
+          ean: '9791091146135',
+          title: 'Chants du cauchemar et de la nuit',
+          publisher: {
+            id: publisher._id,
+            name: publisher.name
+          }
         });
-        user.save(function(err) {
+        book.addAuthor(author);
+        book.save(function(err) {
           if (err) throw err;
-          done();
+          user.save(function(err) {
+            if (err) throw err;
+            done();
+          });
         });
       });
     });
@@ -48,9 +58,44 @@ describe('Books', function() {
 
   after(function(done) {
     Book.collection.drop();
+    Contributor.collection.drop();
     Publisher.collection.drop();
     User.collection.drop();
     done();
+  });
+
+  describe('GET /api/v0/books/', function() {
+
+    it('should return an array of books', function(done) {
+      chai.request(server)
+        .get('/api/v0/books/')
+        .end(function(err, res) {
+          res.should.have.status(200);
+          res.should.be.json;
+          res.body.should.have.property('count');
+          res.body.count.should.equal(1);
+          res.body.should.have.property('total');
+          res.body.total.should.equal(1);
+          res.body.should.have.property('skipped');
+          res.body.skipped.should.equal(0);
+          res.body.should.have.property('count');
+          res.body.results.should.be.an('array');
+          res.body.results[0].should.be.an('object');
+          res.body.results[0].should.have.property('ean');
+          res.body.results[0].ean.should.equal('9791091146135');
+          res.body.results[0].should.have.property('isbn');
+          res.body.results[0].isbn.should.equal('979-10-91146-13-5');
+          res.body.results[0].should.have.property('title');
+          res.body.results[0].title.should.equal('Chants du cauchemar et de la nuit');
+          res.body.results[0].should.have.property('publisher');
+          res.body.results[0].publisher.should.have.property('id');
+          res.body.results[0].publisher.id.should.equal(publisherId.toString());
+          res.body.results[0].publisher.should.have.property('name');
+          res.body.results[0].publisher.name.should.equal('Dystopia');
+          done();
+        });
+    });
+
   });
 
   describe('GET /api/v0/books/:ean', function() {
@@ -111,13 +156,10 @@ describe('Books', function() {
         .send({ ean: '9791091146135', title: 'Chants du cauchemar et de la nuit' })
         .end(function(err, res) {
           res.should.have.status(409);
-          res.body.should.have.property('error');
-          res.body.error.should.equal('Book with EAN 9791091146135 already exists');
-          res.body.should.have.property('book');
-          res.body.book.should.have.property('ean');
-          res.body.book.ean.should.equal('9791091146135');
-          res.body.book.should.have.property('title');
-          res.body.book.title.should.equal('Chants du cauchemar et de la nuit');
+          res.body.should.have.property('ean');
+          res.body.ean.should.equal('9791091146135');
+          res.body.should.have.property('title');
+          res.body.title.should.equal('Chants du cauchemar et de la nuit');
           done();
         });
     });
@@ -126,7 +168,11 @@ describe('Books', function() {
       chai.request(server)
         .post('/api/v0/books/')
         .set('Authorization', 'key')
-        .send({ title: 'Chants du cauchemar et de la nuit', publisher: publisherId })
+        .send({
+          title: 'Chants du cauchemar et de la nuit',
+          publisher: publisherId,
+          authors: JSON.stringify([{ id: authorId }])
+        })
         .end(function(err, res) {
           res.should.have.status(400);
           res.body.should.have.property('error');
@@ -140,7 +186,12 @@ describe('Books', function() {
       chai.request(server)
         .post('/api/v0/books/')
         .set('Authorization', 'key')
-        .send({ ean: '979105', title: 'Chants du cauchemar et de la nuit', publisher: publisherId })
+        .send({
+          ean: '979105',
+          title: 'Chants du cauchemar et de la nuit',
+          publisher: publisherId,
+          authors: JSON.stringify([{ id: authorId }])
+        })
         .end(function(err, res) {
           res.should.have.status(400);
           res.body.should.have.property('error');
@@ -154,7 +205,11 @@ describe('Books', function() {
       chai.request(server)
         .post('/api/v0/books/')
         .set('Authorization', 'key')
-        .send({ ean: '9782953595109', publisher: publisherId })
+        .send({
+          ean: '9782953595109',
+          publisher: publisherId,
+          authors: JSON.stringify([{ id: authorId }])
+        })
         .end(function(err, res) {
           res.should.have.status(400);
           res.body.should.have.property('error');
@@ -168,7 +223,11 @@ describe('Books', function() {
       chai.request(server)
         .post('/api/v0/books/')
         .set('Authorization', 'key')
-        .send({ ean: '9782953595109', title: 'Chants du cauchemar et de la nuit' })
+        .send({
+          ean: '9782953595109',
+          title: 'Chants du cauchemar et de la nuit',
+          authors: JSON.stringify([{ id: authorId }])
+        })
         .end(function(err, res) {
           res.should.have.status(400);
           res.body.should.have.property('error');
@@ -177,7 +236,59 @@ describe('Books', function() {
         });
     });
 
-    it('should not add a book with a unknown publisher');
+    it('should not add a book with a unknown publisher', function(done) {
+      const unkownPublisherId = mongoose.Types.ObjectId();
+      chai.request(server)
+        .post('/api/v0/books/')
+        .set('Authorization', 'key')
+        .send({
+          ean: '9782953595109',
+          title: 'Chants du cauchemar et de la nuit',
+          publisher: unkownPublisherId,
+          authors: JSON.stringify([{ id: authorId }])
+        })
+        .end(function(err, res) {
+          res.should.have.status(400);
+          res.body.should.have.property('error');
+          res.body.error.should.equal(`Cannot find a publisher with id ${unkownPublisherId}`);
+          done();
+        });
+    });
+
+    it('should not add a book without authors', function(done) {
+      chai.request(server)
+        .post('/api/v0/books/')
+        .set('Authorization', 'key')
+        .send({
+          ean: '9782953595109',
+          title: 'Chants du cauchemar et de la nuit',
+          publisher: publisherId
+        })
+        .end(function(err, res) {
+          res.should.have.status(400);
+          res.body.should.have.property('error');
+          res.body.error.should.equal('Authors parameter is required');
+          done();
+        });
+    });
+
+    it('should not add a book with a unknown author', function(done) {
+      chai.request(server)
+        .post('/api/v0/books/')
+        .set('Authorization', 'key')
+        .send({
+          ean: '9782953595109',
+          title: 'Chants du cauchemar et de la nuit',
+          publisher: publisherId,
+          authors: JSON.stringify([{ id: mongoose.Types.ObjectId() }])
+        })
+        .end(function(err, res) {
+          res.should.have.status(400);
+          res.body.should.have.property('error');
+          res.body.error.should.equal('There should be at least one author');
+          done();
+        });
+    });
 
     it('should add a book', function(done) {
       chai.request(server)
@@ -186,7 +297,8 @@ describe('Books', function() {
         .send({
           ean: '9782953595109',
           title: 'Bara Yogoï',
-          publisher: publisherId
+          publisher: publisherId,
+          authors: JSON.stringify([{ id: authorId }])
         })
         .end(function(err, res) {
           res.should.have.status(201);

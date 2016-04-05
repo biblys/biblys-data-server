@@ -12,13 +12,16 @@ describe('Users', function() {
   User.collection.drop();
 
   beforeEach(function(done) {
-    const user = new User({ apiKey: 'key' });
+    const user  = new User({ apiKey: 'user_key', name: 'User' });
+    const admin = new User({ apiKey: 'admin_key', name: 'Admin', isAdmin: true });
     user.save(function(err) {
-      if (err) {
-        throw err;
-      }
+      if (err) throw err;
 
-      done();
+      admin.save(function(err) {
+        if (err) throw err;
+
+        done();
+      });
     });
   });
 
@@ -32,8 +35,8 @@ describe('Users', function() {
     it('should add a user when authenticated', function(done) {
       chai.request(server)
         .post('/api/v0/users/')
-        .set('Authorization', 'key')
-        .send({ name: 'User', email: 'user@example.com', url: 'http://example.com' })
+        .set('Authorization', 'admin_key')
+        .send({ name: 'User' })
         .end(function(err, res) {
           res.should.have.status(201);
           res.body.should.have.property('apiKey');
@@ -51,13 +54,26 @@ describe('Users', function() {
         });
     });
 
-    it('should not add a user without name', function(done) {
+    it('should not be able to create a user while not being an admin', function(done) {
       chai.request(server)
         .post('/api/v0/users/')
-        .set('Authorization', 'key')
+        .set('Authorization', 'user_key')
         .end(function(err, res) {
-          res.should.have.status(201);
-          res.body.should.have.property('apiKey');
+          res.should.have.status(403);
+          res.body.error.should.equal('You must be an administrator to do this');
+          done();
+        });
+    });
+
+    it('should not be able to add a user without a name', function(done) {
+      chai.request(server)
+        .post('/api/v0/users/')
+        .set('Authorization', 'admin_key')
+        .send()
+        .end(function(err, res) {
+          res.should.have.status(400);
+          res.body.should.have.property('error');
+          res.body.error.should.equal('Name parameter is required');
           done();
         });
     });
