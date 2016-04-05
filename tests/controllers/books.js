@@ -237,20 +237,20 @@ describe('Books', function() {
     });
 
     it('should not add a book with a unknown publisher', function(done) {
-      const publisherId = mongoose.Types.ObjectId();
+      const unkownPublisherId = mongoose.Types.ObjectId();
       chai.request(server)
         .post('/api/v0/books/')
         .set('Authorization', 'key')
         .send({
           ean: '9782953595109',
           title: 'Chants du cauchemar et de la nuit',
-          publisher: publisherId,
+          publisher: unkownPublisherId,
           authors: JSON.stringify([{ id: authorId }])
         })
         .end(function(err, res) {
           res.should.have.status(400);
           res.body.should.have.property('error');
-          res.body.error.should.equal(`Cannot find a publisher with id ${publisherId}`);
+          res.body.error.should.equal(`Cannot find a publisher with id ${unkownPublisherId}`);
           done();
         });
     });
