@@ -26,7 +26,8 @@ app.use(require('./controllers'));
 app.use(express.static('public'));
 
 // HTTP server
-app.listen(port);
-process.stdout.write(`Biblys Data Server listening on port ${port}.\n`);
+app.listen(port, function() {
+  process.stdout.write(`Biblys Data Server listening on port ${port}.\n`);
+});
 
 module.exports = app;
