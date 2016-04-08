@@ -3,6 +3,8 @@
 const express    = require('express');
 const bodyParser = require('body-parser');
 const mongoose   = require('mongoose');
+const morgan     = require('morgan');
+const fs         = require('fs');
 
 // App settings
 const port     = process.env.PORT || 8080;
@@ -14,6 +16,11 @@ const app = express();
 // Body parser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+// Morgan logger
+var accessLogStream = fs.createWriteStream(`${__dirname}/logs/access.log`, { flags: 'a' });
+app.use(morgan('combined', { stream: accessLogStream }));
+app.use(morgan('dev'));
 
 // MongoDB
 mongoose.connect(mongoUrl);

@@ -22,6 +22,7 @@
     "isbn-utils": "^1.0.0",
     "milligram": "^1.1.0",
     "mongoose": "^4.4.4",
+    "morgan": "^1.7.0",
     "style-loader": "^0.13.1",
     "webpack": "^1.12.14"
   },
