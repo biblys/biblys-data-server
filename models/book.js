@@ -1,6 +1,7 @@
 
 const mongoose = require('mongoose');
-const ISBN = require('isbn-utils');
+const ISBN     = require('isbn-utils');
+const algolia  = require('algoliasearch');
 
 const AuthorSchema = new mongoose.Schema ({
   id: {
@@ -80,6 +81,35 @@ BookSchema.method('addAuthor', function(contributor) {
     id: contributor._id,
     name: contributor.name
   });
+});
+
+// Push to algolia on save
+BookSchema.post('save', function(book) {
+
+  if (!process.env.ALGOLIA_APP_ID || !process.env.ALGOLIA_API_KEY) {
+    return;
+  }
+
+  if (process.env.NODE_ENV === 'test') {
+    return;
+  }
+
+  const client = algolia(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_API_KEY);
+  const index  = client.initIndex('books');
+
+  index.addObject({
+    ean: book.ean,
+    isbn: book.isbn,
+    title: book.title,
+    publisher: book.publisher.name,
+    authors: this.authors.map(function(author) {
+      return author.name;
+    })
+  }, book.ean, function(err, content) {
+    if (err) throw err;
+    process.stdout.write(`Pushed to algolia: ${content.objectID}`);
+  });
+
 });
 
 module.exports = mongoose.model('Book', BookSchema);
