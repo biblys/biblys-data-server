@@ -9,7 +9,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "PORT=5001 MONGO_URL=mongodb://localhost/biblys-data-test node_modules/mocha/bin/mocha tests --recursive --timeout 5000",
+    "test": "NODE_ENV=test PORT=5001 MONGO_URL=mongodb://localhost/biblys-data-test node_modules/mocha/bin/mocha tests --recursive --timeout 5000",
     "start": "node index.js"
   },
   "author": "Clément Bourgoin <cb@nokto.net>",

@@ -90,6 +90,10 @@ BookSchema.post('save', function(book) {
     return;
   }
 
+  if (process.env.NODE_ENV === 'test') {
+    return;
+  }
+
   const client = algolia(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_API_KEY);
   const index  = client.initIndex('books');
 
