@@ -139,6 +139,11 @@ To be implemented.
 
 ## Changelog
 
+### 0.4.O (2016-11-24)
+* Add Algolia service
+* Display 10 last created books on home page 
+* Log HTTP requests
+
 ### 0.3.0 (2016-04-05)
 * Added Contributor model, create and read controllers
 * Added a required *authors* property to Book resource
