@@ -28,7 +28,7 @@
     "webpack": "^1.12.14"
   },
   "engines": {
-    "node": "4.3.1"
+    "node": "^9.10.0"
   },
   "devDependencies": {
     "chai": "^3.2.0",
